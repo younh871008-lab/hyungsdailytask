@@ -112,8 +112,9 @@
             flex: 1;
         }
         
-        input[type="date"] {
-            width: 180px;
+        input[type="date"],
+        input[type="time"] {
+            width: 160px;
             cursor: pointer;
         }
 
@@ -200,6 +201,23 @@
             background: rgba(255, 255, 255, 0.08);
             transform: scale(1.02);
             border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .todo-item-content {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .todo-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 6px;
+            white-space: nowrap;
         }
 
         .todo-text {
@@ -291,15 +309,16 @@
                     }
                 }
                 return [
-                    { id: 1, text: "React로 투두 앱 만들기", date: getTodayDate() },
-                    { id: 2, text: "멋진 디자인 및 애니메이션 추가하기", date: getTodayDate() },
-                    { id: 3, text: "Netlify로 멋지게 배포해보기!", date: getTodayDate() }
+                    { id: 1, text: "React로 투두 앱 만들기", date: getTodayDate(), time: "09:00" },
+                    { id: 2, text: "멋진 디자인 및 애니메이션 추가하기", date: getTodayDate(), time: "14:30" },
+                    { id: 3, text: "Netlify로 멋지게 배포해보기!", date: getTodayDate(), time: "" }
                 ];
             };
 
             const [todos, setTodos] = React.useState(loadTodos());
             const [inputValue, setInputValue] = React.useState('');
             const [inputDate, setInputDate] = React.useState(getTodayDate());
+            const [inputTime, setInputTime] = React.useState('');
 
             // Save to LocalStorage whenever 'todos' array changes
             React.useEffect(() => {
@@ -313,12 +332,14 @@
                 const newTodo = {
                     id: Date.now(),
                     text: inputValue.trim(),
-                    date: inputDate || getTodayDate()
+                    date: inputDate || getTodayDate(),
+                    time: inputTime || ""
                 };
                 
-                setTodos([newTodo, ...todos]);
+                setTodos([...todos, newTodo]); // Appended to end, sorting logic sets display order
                 setInputValue('');
                 setInputDate(getTodayDate());
+                setInputTime('');
             };
 
             const handleDelete = (idToRemove) => {
@@ -335,6 +356,18 @@
                 return groups;
             }, {});
 
+            // Sort tasks chronologically within each group
+            Object.keys(groupedTodos).forEach(date => {
+                groupedTodos[date].sort((a, b) => {
+                    const timeA = a.time || "";
+                    const timeB = b.time || "";
+                    if (timeA === timeB) return a.id - b.id; // Keep insertion order if time identical
+                    if (timeA === "") return -1; // Time-less tasks go first
+                    if (timeB === "") return 1;
+                    return timeA.localeCompare(timeB); // 09:00 goes before 14:00
+                });
+            });
+
             // Sort dates chronologically (newest dates, or future dates first)
             const sortedDates = Object.keys(groupedTodos).sort((a, b) => new Date(b) - new Date(a));
 
@@ -350,6 +383,13 @@
                                 value={inputDate}
                                 onChange={(e) => setInputDate(e.target.value)}
                                 required
+                                title="날짜 선택"
+                            />
+                            <input 
+                                type="time" 
+                                value={inputTime}
+                                onChange={(e) => setInputTime(e.target.value)}
+                                title="시간 선택 (선택사항)"
                             />
                             <input 
                                 type="text" 
@@ -382,7 +422,10 @@
                                     <ul className="todo-list">
                                         {groupedTodos[date].map(todo => (
                                             <li key={todo.id} className="todo-item">
-                                                <span className="todo-text">{todo.text}</span>
+                                                <div className="todo-item-content">
+                                                    {todo.time && <span className="todo-time">🕒 {todo.time}</span>}
+                                                    <span className="todo-text">{todo.text}</span>
+                                                </div>
                                                 <button 
                                                     className="delete-btn" 
                                                     onClick={() => handleDelete(todo.id)}
