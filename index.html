@@ -370,11 +370,7 @@
                 if (savedTodos) {
                     try { return JSON.parse(savedTodos); } catch (e) {}
                 }
-                return [
-                    { id: 1, text: "React로 투두 앱 만들기", date: getTodayDate(), time: "09:00" },
-                    { id: 2, text: "멋진 디자인 및 애니메이션 추가하기", date: getTodayDate(), time: "14:30" },
-                    { id: 3, text: "Netlify로 멋지게 배포해보기!", date: getTodayDate(), time: "" }
-                ];
+                return [];
             };
 
             const [todos, setTodos] = React.useState(loadTodos());
