@@ -157,6 +157,89 @@
             margin-top: 1rem;
         }
 
+        /* AI News View Styles */
+        .news-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .news-header {
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .news-item-card {
+            background: #ffffff;
+            border-left: 4px solid var(--accent-color);
+            padding: 1.5rem;
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+        }
+
+        .news-item-card:hover {
+            transform: translateX(5px);
+        }
+
+        .news-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        .news-detail {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 0.8rem;
+        }
+
+        .news-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        .tag-content { background: #f1f5f9; color: #64748b; }
+        .tag-key { background: #dcfce7; color: #166534; }
+        .tag-insight { background: #fee2e2; color: #991b1b; }
+
+        .source-footer {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .source-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .source-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -474,6 +557,15 @@
                             Tasks
                         </div>
                         <div 
+                            className={`nav-item ${activeTab === 'ai-news' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('ai-news')}
+                        >
+                            <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            AI NEWS
+                        </div>
+                        <div 
                             className={`nav-item ${activeTab === 'account' ? 'active' : ''}`}
                             onClick={() => setActiveTab('account')}
                         >
@@ -493,6 +585,72 @@
                 <div className="dashboard-view">
                     <h1 className="dashboard-title">HYUNG DASH BOARD</h1>
                     <p className="dashboard-subtitle">반갑습니다! 오늘 하루도 화이팅 하세요.</p>
+                </div>
+            );
+        }
+
+        function AiNewsView() {
+            const todayNotice = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const newsData = [
+                {
+                    title: "1. AI 에이전트의 시대: 단순 도구에서 '디지털 동료'로의 전환",
+                    content: "AI가 단순 질의응답을 넘어 스스로 목표를 설정하고 다중 프로세스를 수행하는 자율 에이전트(Autonomous Agents)로 진화하며 실무에 본격 도입됨.",
+                    key: "지식 노동 행정 및 유지보수(Scaffolding) 작업의 자동화 가속화.",
+                    insight: "개발자와 기획자는 실행(Execution)보다는 AI 에이전트의 의도(Intent)와 전략을 설계하는 고차원 역할로 전이됨."
+                },
+                {
+                    title: "2. 마이크로소프트, '에이전틱(Agentic)' 협업 도구 리더십 강화",
+                    content: "마이크로소프트가 AI를 공동 작업자(Digital Coworker)로 정의하고, 소프트웨어 개발 가이드 등 고도화된 에이전트 기능을 자사 생태계에 전면 통합 발표.",
+                    key: "AI 인프라 효율성을 극대화한 '슈퍼팩토리(Superfactories)' 구축을 통한 에이전트 구동 지원.",
+                    insight: "B2B 시장이 기능을 제공하는 툴 중심에서 실무 권한을 가진 에이전트 생태계로 재편됨."
+                },
+                {
+                    title: "3. OpenAI, 컴퓨팅 파워 확보를 위한 대형 데이터 센터 투자 가속화",
+                    content: "OpenAI가 독보적인 모델 성능 유지를 위해 칩, 전력, 하드웨어 등 물리적 인프라 확보에 약 400억 달러 규모의 신규 금융 조달 전략 추진.",
+                    key: "AI 경쟁력이 알고리즘을 넘어 대규모 물리 인프라 지배력(Compute as a Moat)으로 전이됨.",
+                    insight: "자본과 인프라 확보 능력이 후발 주자와의 격차를 벌리는 핵심 생존 경쟁력이 될 것임."
+                },
+                {
+                    title: "4. 애플, WWDC 2026에서 온디바이스 AI 성능 및 API 대규모 공개 예정",
+                    content: "오는 6월 WWDC 2026에서 애플이 자사 기기 내 처리 중심의 generative AI 전략과 서드파티 연결성을 강화한 신규 API를 공개하며 AI 시장 신뢰 시험대에 오름.",
+                    key: "기기 내 개인정보 보호형 AI(On-device AI)와 앱 생태계 간 유기적 연결성 강화.",
+                    insight: "모바일 생태계 사용자 경험이 AI 기반의 개인화 서비스로 완성되는 중요한 분기점이 될 것임."
+                },
+                {
+                    title: "5. 유럽 AI 법(EU AI Act) 본격 적용에 따른 신뢰 거버넌스 공식화",
+                    content: "유럽 연합의 AI 규제법 시행으로 전 세계 AI 기업들이 거버넌스 및 리커스 관리 체계를 표준 운영 절차로 채택하며 투명한 AI 운영 필수화.",
+                    key: "컴플라이언스 준수(Compliance)가 단순 법적 절차를 넘어 핵심 비즈니스 운영 요건이 됨.",
+                    insight: "성능 경쟁 시대를 지나 윤리와 투명성이 확보된 '책임 있는 AI(Responsible AI)'만이 시장의 선택을 받는 시대로 진입."
+                }
+            ];
+
+            return (
+                <div className="news-container">
+                    <div className="news-header-box">
+                        <h2 className="news-header">### 📅 {todayNotice} AI Daily Briefing</h2>
+                    </div>
+
+                    <div className="news-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        {newsData.map((item, index) => (
+                            <div key={index} className="news-item-card">
+                                <h3 className="news-title">{item.title}</h3>
+                                <div className="news-detail"><span className="news-tag tag-content">내용</span> {item.content}</div>
+                                <div className="news-detail"><span className="news-tag tag-key">핵심</span> {item.key}</div>
+                                <div className="news-detail"><span className="news-tag tag-insight">시사점</span> {item.insight}</div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="source-footer">
+                        <strong>🔗 Original Sources</strong>
+                        <div className="source-grid">
+                            <a href="https://www.microsoft.com" target="_blank" className="source-link">Microsoft Official</a>
+                            <a href="https://openai.com" target="_blank" className="source-link">OpenAI Blog</a>
+                            <a href="https://www.apple.com/newsroom/" target="_blank" className="source-link">Apple Newsroom</a>
+                            <a href="https://artificialintelligenceact.eu/" target="_blank" className="source-link">EU AI Act Portal</a>
+                        </div>
+                    </div>
                 </div>
             );
         }
@@ -692,6 +850,7 @@
                     <main className="main-container">
                         {activeTab === 'home' && <DashboardView />}
                         {activeTab === 'tasks' && renderPlanner()}
+                        {activeTab === 'ai-news' && <AiNewsView />}
                         {activeTab === 'account' && <div className="content-card">계정 정보를 불러오는 중... (준비 중)</div>}
                     </main>
                 </div>
